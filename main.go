@@ -9,15 +9,18 @@ import (
 var wg sync.WaitGroup
 
 func expensiveMethod() error {
-	for i := 0; i < 10000000; i++ {
-	}
+	time.Sleep(time.Second * 1)
 	return nil
 }
 
 func main() {
 	start := time.Now()
 	for i := 0; i < 30; i++ {
-		expensiveMethod()
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			expensiveMethod()
+		}()
 	}
 	wg.Wait()
 	end := time.Now()
